@@ -18,24 +18,31 @@ export class DogsController {
   }
   @Get('')
   findOne(@Query('id') id: string) {
-    const dog = this.dogs[id];
+    const idNum = Number(id);
+    const dog = this.dogs[idNum];
+    if (!dog) {
+      return 'Invalid id';
+    }
     return JSON.stringify(dog);
   }
   @Put('')
   update(@Query('id') id: string) {
-    this.dogs = this.dogs.map((dog) => {
-      if (dog.id === Number(id)) {
-        dog.name = dog.name + ' updated';
-      }
-      return dog;
-    });
-    return this.dogs[id];
+    const idNum = Number(id);
+    const dogToUpdate = this.dogs[idNum];
+    if (!dogToUpdate) {
+      return 'Invalid id';
+    }
+    this.dogs[idNum].name = dogToUpdate.name + ' updated';
+    return JSON.stringify(this.dogs[idNum]);
   }
   @Delete('')
   remove(@Query('id') id: string) {
     const idNum = Number(id);
     const dogToRemove = this.dogs[idNum];
-    this.dogs = this.dogs.filter((dog) => dog.id !== idNum);
+    if (!dogToRemove) {
+      return 'Invalid id';
+    }
+    this.dogs.splice(idNum, 1);
     return `Successfully deleted ${JSON.stringify(dogToRemove)}`;
   }
 }
